@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer</title>
+<!--    Google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Elbasan&family=Playball&display=swap" rel="stylesheet">
+
+<!--    Boostrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        .noto-sans-elbasan-regular {
+          font-family: "Noto Sans Elbasan", sans-serif;
+          font-weight: 600;
+          font-style: normal;
+        }
+
+        .montserrat-normal {
+          font-family: "Montserrat", sans-serif;
+          font-optical-sizing: auto;
+          font-weight:normarl;
+          font-style: normal;
+        }
+
+        .btn {
+           padding: 2rem, 1rem;
+           font-weight: semi-bold;
+           margin-top: 5px;
+           border: 1px solid black;
+        }
+
+        .heading {
+           display: flex;
+           justify-content: center;
+        }
+
+        form {
+<!--           margin-right: 50%;-->
+<!--           margin-left: 50%;-->
+        }
+
+        .container {
+            margin: 0 10% 0 10%;
+            border: 2px solid black;
+            border-radius: 10px;
+            padding: 2rem;
+        }
+
+        .input-num {
+
+            width: 20%;
+            margin: 5px 2px;
+        }
+
+    </style>
+</head>
+
+<body class="montserrat-normal container">
+
+    <h1 class="noto-sans-elbasan-regular heading">Text Summarizer</h1>
+    <form id="url-form">
+        <div class="mb-3">
+          <label for="exampleFormControlInput1" class="form-label fs-5">Email address</label>
+          <input type="text" class="form-control" id="url" name="url" placeholder="https://google.com/..">
+           <div class="d-flex ">
+                <input type="number" class="form-control input-num" id="max_length" name="max_length" placeholder="Max Length of Summary">
+                <input type="number" class="form-control input-num" id="min_length" name="min_length" placeholder="Min Length of Summary..">
+           </div>
+          <br>
+          <button class="btn btn-success" type="submit">Summarize</button>
+        </div>
+    </form>
+
+    <h2>Original Text:</h2>
+    <p class="montserrat-normal" id="original_text"></p>
+    <h2>Summary:</h2>
+    <p class="montserrat-normal" id="summary"></p>
+
+
+    <script>
+        document.getElementById('url-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            const min_length = document.getElementById('min_length').value || 120;
+            const max_length = document.getElementById('max_length').value || 30;
+            const response = await fetch('/summarize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url, max_length, min_length })
+            });
+            const data = await response.json();
+            document.getElementById('original_text').textContent = data.original_text || 'No summary available.';
+            document.getElementById('summary').textContent = data.summary || 'No summary available.';
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
